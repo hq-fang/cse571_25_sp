@@ -1,3 +1,5 @@
 pybullet
 numpy
 matplotlib
+pandas
+tqdm

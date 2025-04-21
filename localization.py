@@ -109,7 +109,7 @@ def localize(
         while True:
             env.p.stepSimulation()
     
-    return mean_position_error, anees
+    return mean_position_error, anees, states_real, states_filter
 
 
 def setup_parser():
@@ -205,10 +205,20 @@ if __name__ == '__main__':
             )
 
         # You may want to edit this line to run multiple localization experiments.
-        pe, anees = localize(env, policy, filt, initial_mean, args.num_steps, args.plot, args.step_pause, args.step_breakpoint)
+        pe, anees, states_real, states_filter = localize(env, policy, filt, initial_mean, args.num_steps, args.plot, args.step_pause, args.step_breakpoint)
         pe_list.append(pe)
         anees_list.append(anees)
         args.seed += 1
+
+        # # plot true path
+        # plt.plot(states_real[:,0], states_real[:,1], '-', label='True path')
+        # # plot PF estimate
+        # plt.plot(states_filter[:,0], states_filter[:,1], '--', label='Particle Filter')
+        # plt.axis('equal')
+        # plt.xlabel('x (m)'); plt.ylabel('y (m)')
+        # plt.legend()
+        # plt.title('Robot Trajectory vs. PF Estimate')
+        # plt.savefig('trajectory.png')    # or plt.show() if you have a display
         
     if args.multi_run > 1:
         print('Data factor:', args.data_factor)
@@ -220,3 +230,4 @@ if __name__ == '__main__':
         print('Mean ANEES:', np.mean(anees_list))
         print('Standard deviation of ANEES:', np.std(anees_list))
         
+    

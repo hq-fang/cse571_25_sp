@@ -43,6 +43,13 @@ class ParticleFilter:
         new_particles = self.particles
 
         # YOUR IMPLEMENTATION HERE
+
+        new_particles = np.zeros_like(self.particles)
+        for i in range(self.num_particles):
+            u_noisy = env.sample_noisy_action(u, self.alphas)
+            x_new_col = env.forward(self.particles[i, :], u_noisy)
+            new_particles[i, :] = x_new_col.ravel()
+        self.particles = new_particles
         
         # YOUR IMPLEMENTATION END HERE
         return new_particles
@@ -68,6 +75,25 @@ class ParticleFilter:
         particles = self.move_particles(env, u)
         mean, cov = None, None
         # YOUR IMPLEMENTATION HERE
+
+        # compute weights
+        weights = np.zeros(self.num_particles)
+        for i in range(self.num_particles):
+            z_hat = env.observe(particles[i, :], marker_id)
+            innov = minimized_angle(z - z_hat)
+            weights[i] = env.likelihood(innov, self.beta)
+
+        # normalize
+        weights += 1e-300
+        weights /= np.sum(weights)
+        self.weights = weights
+
+        # resample
+        new_particles = self.resample(particles, weights)
+        self.particles = new_particles
+        self.weights = np.ones(self.num_particles) / self.num_particles
+
+        mean, cov = self.mean_and_variance(self.particles)
         
         # YOUR IMPLEMENTATION END HERE
         return mean, cov
@@ -83,6 +109,20 @@ class ParticleFilter:
         """
         new_particles = None
         # YOUR IMPLEMENTATION HERE
+
+        M = self.num_particles
+        new_particles = np.zeros_like(particles)
+
+        r = np.random.rand() / M
+        c = weights[0]
+        i = 0
+
+        for m in range(M):
+            u = r + m * (1.0 / M)
+            while u > c:
+                i += 1
+                c += weights[i]
+            new_particles[m, :] = particles[i, :]
         
         # YOUR IMPLEMENTATION END HERE
         return new_particles
