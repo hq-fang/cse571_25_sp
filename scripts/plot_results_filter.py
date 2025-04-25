@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 def main():
     # 1) Load the CSV
-    df = pd.read_csv("exp_results_filter.csv")
+    df = pd.read_csv("../results/exp_results_filter.csv")
     # 2) Keep only data_factor == 1 and sort by filter_factor
     df = df[df["data_factor"] == 1].sort_values("filter_factor")
 
@@ -38,7 +38,7 @@ def main():
     plt.tight_layout()
     # Save and show
     plt.savefig("filter_noise_slice_plots.png")
-    print("Saved filter_noise_slice_plots.png")
+    print("Saved")
     plt.show()
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ stat_re = {
 }
 
 # where to dump results
-output_csv = "exp_results.csv"
+output_csv = "exp_results_n200.csv"
 
 with open(output_csv, "w", newline="") as f:
     writer = csv.DictWriter(f, fieldnames=[
@@ -28,14 +28,15 @@ with open(output_csv, "w", newline="") as f:
 
     for df in data_factors:
         for ff in filter_factors:
-            print(f"→ running data={df:g}, filter={ff:g} …", end="", flush=True)
+            print(f"running data={df:g}, filter={ff:g} …", end="", flush=True)
             # call localization.py, no GUI, single run
             cmd = [
-                "python", "localization.py", "pf",
+                "python", "../localization.py", "pf",
                 "--data-factor", str(df),
                 "--filter-factor", str(ff),
                 "--multi_run", "10",    # already returns single‐run stats
                 "--seed", "0",
+                "--num-particles", "200",
             ]
             proc = subprocess.run(cmd, capture_output=True, text=True)
             out = proc.stdout + proc.stderr

@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 1) Load the CSV
-df = pd.read_csv("exp_results_full.csv")
+df = pd.read_csv("../results/exp_results_n200.csv")
 
 # 2) Identify and sort the unique noise‐factor levels
 filter_factors = np.array(sorted(df["filter_factor"].unique()))
@@ -45,5 +45,5 @@ for ax, ylabel in ((ax1, "Mean Position Error"), (ax2, "Mean ANEES")):
     ax.grid(True)
 
 plt.tight_layout()
-plt.savefig("errorbar_slice_plots.png")
-print("Saved errorbar_slice_plots.png")
+plt.savefig("results_full_n200.png")
+print("Saved")
